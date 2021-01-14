@@ -1,11 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Quiz App</title>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<div class="form-wrapper">
+			<div class="form-container">
+				<h2 class="question-header">who created javascript ?</h2>
+
+				<form id="quiz-form">
+					<div class="form-box-options">
+						<div class="option-box">
+                            <input type="radio" name="option" />
+							<label for="option">james gosgling</label>
+						</div>
+
+						<div class="option-box">
+                            <input type="radio" name="option" />
+							<label for="option">bill gates</label>
+						</div>
+
+						<div class="option-box">
+                            <input type="radio" name="option" />
+							<label for="option">bredan eich</label>
+						</div>
+
+						<div class="option-box">
+							<input type="radio" />
+							<label for="option">Dennis Ritchie</label>
+						</div>
+					</div>
+
+					<div class="form-box btn-container">
+						<button id="submit-btn" class="btn">submit</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</body>
 </html>

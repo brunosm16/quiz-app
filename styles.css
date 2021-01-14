@@ -1,0 +1,154 @@
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans');
+/* Variables */
+:root {
+	/* Dark shades of blue used as primary color*/
+	--clr-primary-1: hsl(229, 97%, 30%);
+	--clr-primary-2: hsl(229, 87%, 37%);
+	--clr-primary-3: hsl(229, 77%, 47%);
+	--clr-primary-4: hsl(229, 67%, 57%);
+	--clr-primary-5: hsl(225, 57%, 67%);
+
+	/* Lighter shades of blue used as primary color */
+	--clr-primary-6: hsl(229, 89%, 70%);
+	--clr-primary-7: hsl(229, 90%, 76%);
+	--clr-primary-8: hsl(229, 86%, 81%);
+	--clr-primary-9: hsl(229, 90%, 88%);
+	--clr-primary-10: hsl(229, 100%, 96%);
+
+	/* Darkest blue used for headings */
+	--clr-blue-1: hsl(251, 99%, 11%);
+	--clr-blue-2: hsl(251, 98%, 12%);
+	--clr-blue-3: hsl(251, 97%, 13%);
+	--clr-blue-4: hsl(251, 95%, 15%);
+
+	/* Shades of blue used as paragraphs */
+	--clr-blue-5: hsl(224, 50%, 39%);
+	--clr-blue-6: hsl(224, 55%, 40%);
+	--clr-blue-7: hsl(224, 57%, 50%);
+	--clr-blue-8: hsl(224, 59%, 55%);
+	--clr-blue-9: hsl(224, 61%, 57%);
+	--clr-blue-10: hsl(224, 66%, 60%);
+
+	/* Other colors */
+	--clr-white: #fff;
+	--clr-orange-dark: hsl(19, 95%, 39%);
+	--clr-orange-light: hsl(19, 98%, 49%);
+	--clr-turquoise-dark: hsl(175, 98%, 30%);
+	--clr-turquoise-light: hsl(175, 97%, 45%);
+	--clr-black: #212121;
+
+	/* Fonts */
+	--ff-primary: 'Inter', sans-serif;
+	--ff-secondary: 'Work Sans', sans-serif;
+
+	/* Other configurations */
+	--transition: all 0.3s linear;
+	--spacing: 0.1rem;
+	--radius: 0.25rem;
+	--light-shadow: 0 5px 15px 5px rgba(2, 227, 208, 0.3);
+	--dark-shadow: 0 5px 15px 5px rgba(2, 227, 208, 0.1);
+
+	/* Width configurations*/
+	--max-width: 1170px;
+	--fixed-width: 620px;
+}
+
+*,
+::before,
+::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background: var(--clr-blue-1);
+	color: var(--clr-primary-10);
+	font-family: var(--ff-primary);
+	letter-spacing: var(--spacing);
+	line-height: 1.5;
+	text-transform: capitalize;
+}
+
+.form-container {
+	background: var(--clr-primary-1);
+	width: 90%;
+	max-width: var(--fixed-width);
+	height: 80vh;
+	margin: 3rem auto;
+	border-radius: 10px;
+	padding: 1.75rem;
+	position: relative;
+	overflow: hidden;
+	box-shadow: var(--light-shadow);
+	transition: var(--transition);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.form-container:hover {
+	box-shadow: var(--dark-shadow);
+}
+
+.question-header {
+	font-weight: 700;
+}
+
+#quiz-form {
+	display: grid;
+	margin: 2.25rem 0;
+	width: 100%;
+}
+
+.form-box-options {
+	margin: 0 2rem;
+}
+
+.option-box {
+	display: flex;
+	align-items: center;
+	margin: 1rem 0;
+}
+
+.option-box input {
+    margin-right: 1rem;
+    border:none;
+}
+
+.option-box input:hover {
+    cursor: pointer;
+    background:hsl(233, 10%, 68%);
+}
+
+.btn-container {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+
+.btn {
+	display: block;
+	width: 100%;
+	padding: 1rem;
+	border-top-left-radius: 30px;
+	border-top-right-radius: 30px;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	transition: var(--transition);
+	color: var(--clr-blue-5);
+	text-transform: capitalize;
+	font-size: 1.175rem;
+	letter-spacing: var(--spacing);
+	background: var(--clr-primary-9);
+}
+
+.btn:hover {
+	background: var(--clr-primary-7);
+	color: var(--clr-primary-10);
+}
