@@ -59,13 +59,6 @@ function replaceOptions(options) {
 	}
 }
 
-function getButtonElement(id) {
-	let attrs = new Map();
-	attrs.set('class', 'btn');
-	attrs.set('id', id);
-
-	return getHTMLElement('button', attrs);
-}
 
 /*
 	Remove all occurrences from a element specified by identifier
@@ -176,6 +169,14 @@ function getOptionBox() {
 	box.appendChild(getLabel());
 
 	return box;
+}
+
+function getButtonElement(id) {
+	let attrs = new Map();
+	attrs.set('class', 'btn');
+	attrs.set('id', id);
+
+	return getHTMLElement('button', attrs);
 }
 
 function updateHeader(html) {
