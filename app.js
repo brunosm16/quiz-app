@@ -36,8 +36,10 @@ const questions = [
 const questionText = document.querySelector('#question-text');
 const boxOptions = document.querySelector('#form-box-options');
 const btnContainer = document.querySelector('#btn-container');
+const quizForm = document.querySelector('#quiz-form');
+const formContainer = document.querySelector('.form-container');
 
-let counter = 1;
+let counter = 0;
 let rightAnswers = 0;
 
 function setHeader(header) {
@@ -58,7 +60,6 @@ function getInput() {
 	// map with attributes to pass to input element
 	let attrs = new Map();
 	attrs.set('type', 'radio');
-	attrs.set('name', 'option');
 	attrs.set('name', 'option');
 
 	return getHTMLElement('input', attrs);
@@ -84,22 +85,45 @@ function getOptionBox() {
 function setOptions(options) {
 	options.forEach((option) => {
 		let optionBox = getOptionBox();
-		optionBox.querySelector('label').innerHTML = option;
+		let label = optionBox.querySelector('label');
+
+		if (label) optionBox.querySelector('label').innerHTML = option;
 		boxOptions.appendChild(optionBox);
 	});
 }
 
-function getButtonElement() {
+function replaceOptions(options) {
+	let childsFormBox = boxOptions.querySelectorAll('.option-box');
+
+	for (let i = 0; i < childsFormBox.length; i++) {
+		let newLabel = getLabel();
+		let newInput = getInput();
+
+		newLabel.innerHTML = options[i];
+
+		let oldLabel = childsFormBox[i].lastElementChild;
+		let oldInput = childsFormBox[i].firstElementChild;
+
+		childsFormBox[i].replaceChild(newLabel, oldLabel);
+		childsFormBox[i].replaceChild(newInput, oldInput);
+	}
+}
+
+function getButtonElement(id) {
 	let attrs = new Map();
 	attrs.set('class', 'btn');
-	attrs.set('id', 'submit-btn');
+	attrs.set('id', id);
 
 	return getHTMLElement('button', attrs);
 }
 
 function setBtn(message) {
-	let btn = getButtonElement();
+	let btn = getButtonElement(`${message}-btn`);
 	btn.innerHTML = message;
+
+	let oldBtn = btnContainer.firstElementChild;
+
+	if (oldBtn) btnContainer.removeChild(oldBtn);
 
 	btnContainer.appendChild(btn);
 }
@@ -111,22 +135,64 @@ function initValues() {
 	setHeader(initialHeader);
 	setOptions(questions[0].options);
 	setBtn('submit');
+	submitEvent();
 }
 
 function verifyAnswer(answer) {
-	if (answer === questions[counter].answer) {
+	if (answer == questions[counter].answer) {
 		rightAnswers++;
 	}
 }
 
+function setResult() {
+	let optionBoxes = document.querySelectorAll('.option-box')
+
+	optionBoxes.forEach(box => box.remove());
+
+	questionText.innerHTML = `
+	You answered correctly at ${rightAnswers}/${questions.length} 
+	questions 
+	`;
+
+	formContainer.classList.add('result');
+}
+
 function changeQuestion() {
-    if(counter === questions.length) {
-        // setReloadPage
-    }
-    let newHeader = questions[counter].title;
-    setHeader(newHeader);
-    // setOptions(questions[counter])
-    counter++;
+	if (counter === questions.length - 1) {
+		setResult();
+		setBtn('reload');
+		reloadEvent();
+	} else {
+		counter++;
+
+		if (counter != questions.length) {
+			// Set New Values
+			let newHeader = questions[counter].title;
+			setHeader(newHeader);
+			replaceOptions(questions[counter].options);
+		}
+	}
+}
+
+function reloadEvent() {
+	const reloadBtn = document.querySelector('#reload-btn');
+
+	if (reloadBtn) {
+		reloadBtn.addEventListener('click', (e) => {
+			e.preventDefault();
+
+			// reset counting
+			counter = 0;
+			rightAnswers = 0;
+
+			// set initial display
+			boxOptions.style.display = 'block';
+			formContainer.classList.remove('result');
+			let newHeader = questions[counter].title;
+			setHeader(newHeader);
+			initValues();
+		});
+	}
 }
 
 function submitEvent() {
@@ -135,22 +201,22 @@ function submitEvent() {
 	submitBtn.addEventListener('click', (e) => {
 		e.preventDefault();
 
+		console.log('submit')
+
 		let input = [...document.querySelectorAll('input')];
 
-        input = input.filter((input) => input.checked);
-        label = input[0].nextElementSibling;
+		input = input.filter((input) => input.checked);
 
 		if (input.length !== 0) {
+			label = input[0].nextElementSibling;
 			verifyAnswer(label.innerText);
-            changeQuestion();
-            console.log(counter);
-        }
+			changeQuestion();
+		}
 	});
 }
 
 function init() {
 	initValues();
-	submitEvent();
 }
 
 document.addEventListener('DOMContentLoaded', init);

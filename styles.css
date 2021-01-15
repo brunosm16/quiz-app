@@ -90,6 +90,12 @@ body {
 	align-items: center;
 }
 
+.result {
+	height: 20vh;
+	margin: 15rem auto;
+	padding-top: 3rem;
+}
+
 .form-container:hover {
 	box-shadow: var(--dark-shadow);
 }
