@@ -42,62 +42,12 @@ const formContainer = document.querySelector('.form-container');
 let counter = 0;
 let rightAnswers = 0;
 
-function setHeader(header) {
-	questionText.innerHTML = header;
-}
-
-function getHTMLElement(name, attrs = {}) {
-	let element = document.createElement(name);
-
-	for (let [key, value] of attrs.entries()) {
-		element.setAttribute(key, value);
-	}
-
-	return element;
-}
-
-function getInput() {
-	// map with attributes to pass to input element
-	let attrs = new Map();
-	attrs.set('type', 'radio');
-	attrs.set('name', 'option');
-
-	return getHTMLElement('input', attrs);
-}
-
-function getLabel() {
-	let attrs = new Map();
-	attrs.set('for', 'option');
-
-	return getHTMLElement('label', attrs);
-}
-
-function getOptionBox() {
-	let box = getHTMLElement('div', new Map().set('class', 'option-box'));
-
-	// append input and label
-	box.appendChild(getInput());
-	box.appendChild(getLabel());
-
-	return box;
-}
-
-function setOptions(options) {
-	options.forEach((option) => {
-		let optionBox = getOptionBox();
-		let label = optionBox.querySelector('label');
-
-		if (label) optionBox.querySelector('label').innerHTML = option;
-		boxOptions.appendChild(optionBox);
-	});
-}
-
 function replaceOptions(options) {
 	let childsFormBox = boxOptions.querySelectorAll('.option-box');
 
 	for (let i = 0; i < childsFormBox.length; i++) {
 		let newLabel = getLabel();
-		let newInput = getInput();
+		let newInput = getInputRadio();
 
 		newLabel.innerHTML = options[i];
 
@@ -117,61 +67,37 @@ function getButtonElement(id) {
 	return getHTMLElement('button', attrs);
 }
 
-function setBtn(message) {
-	let btn = getButtonElement(`${message}-btn`);
-	btn.innerHTML = message;
-
-	let oldBtn = btnContainer.firstElementChild;
-
-	if (oldBtn) btnContainer.removeChild(oldBtn);
-
-	btnContainer.appendChild(btn);
-}
-
-function initValues() {
-	// Initialize header
-	let initialHeader = questions[0].title;
-
-	setHeader(initialHeader);
-	setOptions(questions[0].options);
-	setBtn('submit');
-	submitEvent();
-}
-
-function verifyAnswer(answer) {
-	if (answer == questions[counter].answer) {
-		rightAnswers++;
-	}
+/*
+	Remove all occurrences from a element specified by identifier
+*/
+function removeAllElements(className) {
+	let elements = document.querySelectorAll(className);
+	elements.forEach((element) => element.remove());
 }
 
 function setResult() {
-	let optionBoxes = document.querySelectorAll('.option-box')
+	// Remove all occurrences of '.option-box'
+	removeAllElements('.option-box');
 
-	optionBoxes.forEach(box => box.remove());
-
-	questionText.innerHTML = `
+	let html = `
 	You answered correctly at ${rightAnswers}/${questions.length} 
 	questions 
 	`;
 
+	updateHeader(html);
 	formContainer.classList.add('result');
 }
 
-function changeQuestion() {
-	if (counter === questions.length - 1) {
-		setResult();
-		setBtn('reload');
-		reloadEvent();
-	} else {
-		counter++;
+function resetValuesFromPage() {
+	// reset counting
+	counter = 0;
+	rightAnswers = 0;
 
-		if (counter != questions.length) {
-			// Set New Values
-			let newHeader = questions[counter].title;
-			setHeader(newHeader);
-			replaceOptions(questions[counter].options);
-		}
-	}
+	// set initial display
+	boxOptions.style.display = 'block';
+	formContainer.classList.remove('result');
+
+	initValues();
 }
 
 function reloadEvent() {
@@ -180,19 +106,106 @@ function reloadEvent() {
 	if (reloadBtn) {
 		reloadBtn.addEventListener('click', (e) => {
 			e.preventDefault();
-
-			// reset counting
-			counter = 0;
-			rightAnswers = 0;
-
-			// set initial display
-			boxOptions.style.display = 'block';
-			formContainer.classList.remove('result');
-			let newHeader = questions[counter].title;
-			setHeader(newHeader);
-			initValues();
+			resetValuesFromPage();
 		});
 	}
+}
+
+function setResultPage() {
+	setResult();
+	setBtn('reload');
+	reloadEvent();
+}
+
+function updatePage() {
+	// Counter didn't reach the all the questions
+	if (++counter != questions.length) {
+		// Set new values
+		updateHeader(questions[counter].title);
+		replaceOptions(questions[counter].options);
+		return;
+	}
+
+	// Only executed if counter reach the limit of questions
+	setResultPage();
+}
+
+/*
+	Verify if 'answer' is correct by comparing with the answer 
+	for the current question in question object. 
+*/
+function verifyAnswer(answer) {
+	// Only increment the answers if is right
+	if (answer == questions[counter].answer) rightAnswers++;
+}	
+
+/*
+	Return a HTML element with a name passed as argument,
+	and with attributes from a Map. 
+*/
+function getHTMLElement(name, attrs = {}) {
+	let element = document.createElement(name);
+
+	for (let [key, value] of attrs.entries()) {
+		element.setAttribute(key, value);
+	}
+
+	return element;
+}
+
+function getInputRadio() {
+	let attrs = new Map();
+	attrs.set('type', 'radio');
+	attrs.set('name', 'option');
+
+	return getHTMLElement('input', attrs);
+}
+
+function getLabel() {
+	let attrs = new Map();
+	attrs.set('for', 'option');
+
+	return getHTMLElement('label', attrs);
+}
+
+function getOptionBox() {
+	let box = getHTMLElement('div', new Map().set('class', 'option-box'));
+
+	// append input and label
+	box.appendChild(getInputRadio());
+	box.appendChild(getLabel());
+
+	return box;
+}
+
+function updateHeader(html) {
+	questionText.innerHTML = html;
+}
+
+// Set Options for Initial Page
+function setOptions(options) {
+	options.forEach((option) => {
+		let optionBox = getOptionBox();
+		let label = optionBox.querySelector('label');
+
+		label.innerHTML = option;
+
+		boxOptions.appendChild(optionBox);
+	});
+}
+
+function setBtn(message) {
+	// Get a button with id based on message
+	let btn = getButtonElement(`${message}-btn`);
+	btn.innerHTML = message;
+
+	let oldBtn = btnContainer.firstElementChild;
+
+	// Only one element can be on page so if another element
+	// is supposed to be set the last one is removed
+	if (oldBtn) btnContainer.removeChild(oldBtn);
+
+	btnContainer.appendChild(btn);
 }
 
 function submitEvent() {
@@ -201,18 +214,27 @@ function submitEvent() {
 	submitBtn.addEventListener('click', (e) => {
 		e.preventDefault();
 
-		console.log('submit')
-
+		// Get input radio values
 		let input = [...document.querySelectorAll('input')];
 
+		// Return the only radio checked
 		input = input.filter((input) => input.checked);
 
+		// Verify if one element was checked
 		if (input.length !== 0) {
 			label = input[0].nextElementSibling;
 			verifyAnswer(label.innerText);
-			changeQuestion();
+
+			updatePage();
 		}
 	});
+}
+
+function initValues() {
+	updateHeader(questions[0].title);
+	setOptions(questions[0].options);
+	setBtn('submit');
+	submitEvent();
 }
 
 function init() {
